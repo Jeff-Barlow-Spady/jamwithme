@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jamwithme.lol — guitar / edmonton</title>
+  <meta name="description" content="Guitar. Edmonton. Punk, hardcore, metal, indie, jazz. No ego, just riffs." />
+  <meta property="og:title" content="jamwithme.lol — guitar / edmonton" />
+  <meta property="og:description" content="Raw riffs & practice tapes. Punk / Hardcore / Metal / Indie / Jazz." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jamwithme.lol" />
+  <style>
+    :root {
+      --bg-crt: #090a0d;
+      --fg-crt: #e8e6e1;
+      --osd-green: #4af626;
+      --osd-amber: #f5b027;
+      --osd-red: #ff3b3b;
+      --bg-paper: #ece9e1;
+      --fg-paper: #141413;
+      --border-paper: #141413;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
+    }
+
+    body {
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      transition: background 0.15s, color 0.15s;
+      overflow-x: hidden;
+    }
+
+    /* Top Utility Bar */
+    .sys-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      border-bottom: 1px solid currentColor;
+      position: relative;
+      z-index: 30;
+    }
+
+    .sys-bar button {
+      background: transparent;
+      color: inherit;
+      border: 1px solid currentColor;
+      padding: 0.25rem 0.5rem;
+      font-family: inherit;
+      font-size: 0.72rem;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .sys-bar button:hover,
+    .sys-bar button.active {
+      background: currentColor;
+    }
+
+    body.mode-crt .sys-bar button:hover,
+    body.mode-crt .sys-bar button.active {
+      color: var(--bg-crt);
+    }
+
+    body.mode-jcard .sys-bar button:hover,
+    body.mode-jcard .sys-bar button.active {
+      color: var(--bg-paper);
+    }
+
+    /* ==================== MODE A: FULL TRINITRON ==================== */
+    body.mode-crt {
+      background: var(--bg-crt);
+      color: var(--fg-crt);
+    }
+
+    /* CRT Scanlines & Aperture Grille */
+    .crt-overlay {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.32) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 3px, 3px 100%;
+      box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.85);
+    }
+
+    body.mode-jcard .crt-overlay {
+      display: none;
+    }
+
+    body.mode-crt .main-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ==================== MODE B: J-CARD + TV ==================== */
+    body.mode-jcard {
+      background: #d8d3c8;
+      color: var(--fg-paper);
+    }
+
+    body.mode-jcard .main-wrap {
+      max-width: 820px;
+      margin: 1.5rem auto 4rem;
+      background: var(--bg-paper);
+      border: 2px solid var(--border-paper);
+      box-shadow: 6px 6px 0 var(--border-paper);
+      padding: 1.5rem;
+    }
+
+    .jcard-spine {
+      display: none;
+    }
+
+    body.mode-jcard .jcard-spine {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--border-paper);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.72rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    body.mode-crt h1 {
+      text-shadow: -1px 0 rgba(255, 0, 80, 0.45), 1px 0 rgba(0, 220, 255, 0.45);
+    }
+
+    .bio {
+      margin-top: 0.5rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      max-width: 64ch;
+      opacity: 0.9;
+    }
+
+    /* Trinitron Monitor Frame */
+    .tv-bezel {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    body.mode-jcard .tv-bezel {
+      background: #232428;
+      padding: 1.1rem 1.1rem 2.1rem;
+      border: 2px solid #111;
+    }
+
+    body.mode-jcard .tv-brand {
+      display: block;
+      position: absolute;
+      bottom: 0.55rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #9b9da3;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      font-weight: bold;
+    }
+
+    .tv-brand {
+      display: none;
+    }
+
+    .crt-screen {
+      position: relative;
+      background: #050608;
+      border: 1px solid #333;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .crt-screen::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+      background-size: 100% 3px, 3px 100%;
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.9);
+      z-index: 5;
+    }
+
+    video#player {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    canvas#scope {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    /* VCR On-Screen Display */
+    .osd-top-left,
+    .osd-top-right,
+    .osd-bottom-left {
+      position: absolute;
+      z-index: 6;
+      font-size: 0.78rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      color: var(--osd-green);
+      text-shadow: 0 0 6px rgba(74, 246, 38, 0.65);
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+
+    .osd-top-left { top: 0.75rem; left: 0.9rem; }
+    .osd-top-right { top: 0.75rem; right: 0.9rem; color: var(--osd-amber); text-shadow: 0 0 6px rgba(245, 176, 39, 0.65); }
+    .osd-bottom-left { bottom: 0.75rem; left: 0.9rem; font-size: 0.72rem; }
+
+    /* Side Switcher & Tracklist */
+    .side-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .side-tabs button {
+      flex: 1;
+      padding: 0.55rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid currentColor;
+      background: transparent;
+      color: inherit;
+      text-transform: uppercase;
+    }
+
+    body.mode-crt .side-tabs button.active {
+      background: var(--osd-green);
+      color: #050608;
+      border-color: var(--osd-green);
+    }
+
+    body.mode-jcard .side-tabs button.active {
+      background: var(--fg-paper);
+      color: var(--bg-paper);
+    }
+
+    .track-list {
+      border-top: 1px solid currentColor;
+      margin-bottom: 1.75rem;
+    }
+
+    .track-item {
+      display: grid;
+      grid-template-columns: 2.2rem 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid currentColor;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .track-item:hover {
+      background: rgba(128, 128, 128, 0.14);
+    }
+
+    body.mode-crt .track-item.playing {
+      color: var(--osd-green);
+      background: rgba(74, 246, 38, 0.08);
+    }
+
+    body.mode-jcard .track-item.playing {
+      background: var(--fg-paper);
+      color: var(--bg-paper);
+    }
+
+    .track-meta {
+      font-size: 0.72rem;
+      opacity: 0.8;
+    }
+
+    /* Info & Contact Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      border-top: 1px solid currentColor;
+      padding-top: 1.25rem;
+      font-size: 0.82rem;
+    }
+
+    .info-grid h2 {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.06em;
+    }
+
+    .info-grid ul {
+      list-style: none;
+      line-height: 1.6;
+    }
+
+    .contact-row {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .contact-row a {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    /* Drawers (Upload & JSON) */
+    .drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .drawer.open {
+      display: flex;
+    }
+
+    .drawer-box {
+      background: #111215;
+      color: #e8e6e1;
+      border: 2px solid var(--osd-green);
+      width: 100%;
+      max-width: 480px;
+      padding: 1.25rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: var(--osd-green);
+    }
+
+    .field {
+      margin-bottom: 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      background: #08090b;
+      color: #e8e6e1;
+      border: 1px solid #444;
+      padding: 0.45rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--osd-green);
+      color: #050608;
+      border: none;
+      padding: 0.6rem;
+      font-family: inherit;
+      font-weight: bold;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--osd-red);
+      border: 1px solid var(--osd-red);
+      padding: 0.2rem 0.45rem;
+      font-family: inherit;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .status-msg {
+      margin-top: 0.6rem;
+      font-size: 0.76rem;
+      color: var(--osd-amber);
+    }
+
+    .manage-list {
+      margin-top: 1.25rem;
+      border-top: 1px solid #333;
+      padding-top: 0.75rem;
+    }
+
+    .manage-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #222;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body class="mode-crt">
+  <div class="crt-overlay"></div>
+
+  <div class="sys-bar">
+    <div>
+      <button id="btnModeCrt" class="active" onclick="setMode('crt')">[ A: FULL TRINITRON ]</button>
+      <button id="btnModeJcard" onclick="setMode('jcard')">[ B: J-CARD + TV ]</button>
+    </div>
+    <div>
+      <button onclick="openUploadDrawer()">[ + UPLOAD / MANAGE ]</button>
+    </div>
+  </div>
+
+  <main class="main-wrap">
+    <div class="jcard-spine">
+      <span>TYPE II CrO2 // 70µs EQ</span>
+      <span>EDMONTON, AB</span>
+      <span>NR: OFF</span>
+    </div>
+
+    <header>
+      <h1>jamwithme.lol</h1>
+      <p class="bio">
+        Guitar. Edmonton. Looking for people to write riffs, make noise, or trade ideas —
+        punk, hardcore, metal, indie, jazz. No ego, just seeing what sticks.
+      </p>
+    </header>
+
+    <section class="tv-bezel">
+      <div class="crt-screen">
+        <div class="osd-top-left" id="osdStatus">STBY // VIDEO 1</div>
+        <div class="osd-top-right" id="osdTime">SP 00:00:00</div>
+        <div class="osd-bottom-left" id="osdTrack">SELECT A CLIP BELOW</div>
+        <video id="player" playsinline controls></video>
+        <canvas id="scope"></canvas>
+      </div>
+      <span class="tv-brand">TRINITRON</span>
+    </section>
+
+    <section>
+      <div class="side-tabs">
+        <button id="tabSideA" class="active" onclick="filterSide('A')">SIDE A // FAST &amp; HEAVY</button>
+        <button id="tabSideB" onclick="filterSide('B')">SIDE B // WEIRD &amp; CLEAN</button>
+      </div>
+      <div class="track-list" id="trackList"></div>
+    </section>
+
+    <section class="info-grid">
+      <div>
+        <h2>// WHAT I'M LOOKING FOR</h2>
+        <ul>
+          <li>- Drummers, bassists, other guitarists, noise makers</li>
+          <li>- Casual basement jams or starting a loud project</li>
+          <li>- Fast punk/hardcore, heavy riffs, or odd-meter indie/jazz</li>
+        </ul>
+      </div>
+      <div>
+        <h2>// PING ME</h2>
+        <div class="contact-row">
+          <span>EMAIL: <a href="mailto:jam@jamwithme.lol">jam@jamwithme.lol</a></span>
+          <span>LOCATION: Edmonton, AB (south/central)</span>
+          <span>STATUS: Down to jam</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Upload & Delete Drawer -->
+  <div class="drawer" id="uploadDrawer">
+    <div class="drawer-box">
+      <div class="drawer-head">
+        <span>VCR REC // R2 TAPE MANAGER</span>
+        <button class="btn-danger" onclick="closeUploadDrawer()">[ X ]</button>
+      </div>
+
+      <form id="uploadForm" onsubmit="handleUpload(event)">
+        <div class="field">
+          <label>Upload PIN</label>
+          <input type="password" id="upPin" required placeholder="Enter UPLOAD_PIN" />
+        </div>
+
+        <div class="field">
+          <label>Video or Audio Clip (Camera Roll / Voice Memo)</label>
+          <input type="file" id="upFile" accept="video/*,audio/*" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Tape Side</label>
+            <select id="upSide">
+              <option value="A">SIDE A (Fast / Heavy)</option>
+              <option value="B">SIDE B (Weird / Clean)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Clip Title</label>
+            <input type="text" id="upTitle" required placeholder="e.g. D-Beat Basement Riff" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Genre / Vibe</label>
+            <input type="text" id="upGenre" placeholder="Hardcore / Punk" />
+          </div>
+          <div class="field">
+            <label>Tuning / BPM</label>
+            <input type="text" id="upTuning" placeholder="D Standard / 170 BPM" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="upSubmitBtn">RECORD TO TAPE (UPLOAD)</button>
+        <div class="status-msg" id="upStatus"></div>
+      </form>
+
+      <div class="manage-list">
+        <div style="font-size:0.75rem; color:#aaa; margin-bottom:0.5rem;">EXISTING CLIPS IN BUCKET:</div>
+        <div id="manageClipsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FALLBACK_TRACKS = [
+      {
+        id: 'demo-1',
+        num: '01',
+        side: 'A',
+        filename: 'BASEMENT_D_BEAT_TEST.MP4',
+        genre: 'HARDCORE / PUNK',
+        tuning: 'E STANDARD // 175 BPM',
+        duration: '0:32',
+        mediaType: 'video',
+        src: ''
+      },
+      {
+        id: 'demo-2',
+        num: '02',
+        side: 'A',
+        filename: 'SLUDGE_DROP_C_RIFF.MP4',
+        genre: 'METAL / NOISE',
+        tuning: 'DROP C // 110 BPM',
+        duration: '0:41',
+        mediaType: 'video',
+        src: ''
+      },
+      {
+        id: 'demo-3',
+        num: '03',
+        side: 'B',
+        filename: 'ODD_METER_CLEAN_LOOP.MP4',
+        genre: 'INDIE / MATH',
+        tuning: 'FACGCE // 128 BPM',
+        duration: '0:38',
+        mediaType: 'video',
+        src: ''
+      },
+      {
+        id: 'demo-4',
+        num: '04',
+        side: 'B',
+        filename: 'LATE_NIGHT_CHORD_VOICINGS.MP4',
+        genre: 'JAZZ / FUSION',
+        tuning: 'E STANDARD // 92 BPM',
+        duration: '0:45',
+        mediaType: 'video',
+        src: ''
+      }
+    ];
+
+    let allTracks = [];
+    let currentSide = 'A';
+    let currentTrackId = null;
+    let audioCtx = null;
+    let oscNode = null;
+    let animId = null;
+
+    const player = document.getElementById('player');
+    const scope = document.getElementById('scope');
+    const osdStatus = document.getElementById('osdStatus');
+    const osdTime = document.getElementById('osdTime');
+    const osdTrack = document.getElementById('osdTrack');
+
+    function setMode(mode) {
+      document.body.className = mode === 'jcard' ? 'mode-jcard' : 'mode-crt';
+      document.getElementById('btnModeCrt').classList.toggle('active', mode === 'crt');
+      document.getElementById('btnModeJcard').classList.toggle('active', mode === 'jcard');
+    }
+
+    function filterSide(side) {
+      currentSide = side;
+      document.getElementById('tabSideA').classList.toggle('active', side === 'A');
+      document.getElementById('tabSideB').classList.toggle('active', side === 'B');
+      renderTracks();
+    }
+
+    async function loadTracks() {
+      try {
+        const res = await fetch('/api/tapes');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.tracks) && data.tracks.length > 0) {
+            allTracks = data.tracks;
+            renderTracks();
+            renderManageList();
+            return;
+          }
+        }
+      } catch (e) {
+        // Fallback for local/static preview
+      }
+      allTracks = FALLBACK_TRACKS;
+      renderTracks();
+      renderManageList();
+    }
+
+    function renderTracks() {
+      const list = document.getElementById('trackList');
+      const filtered = allTracks.filter(t => t.side === currentSide);
+      if (!filtered.length) {
+        list.innerHTML = `<div class="track-item"><span>--</span><span>NO CLIPS ON SIDE ${currentSide} YET</span><span>0:00</span></div>`;
+        return;
+      }
+      list.innerHTML = filtered.map((t, idx) => `
+        <div class="track-item ${t.id === currentTrackId ? 'playing' : ''}" onclick="playTrack('${t.id}')">
+          <span>${String(idx + 1).padStart(2, '0')}</span>
+          <div>
+            <div><strong>${escapeHtml(t.filename)}</strong></div>
+            <div class="track-meta">${escapeHtml(t.genre)} // ${escapeHtml(t.tuning)}</div>
+          </div>
+          <span>${escapeHtml(t.duration || '0:30')}</span>
+        </div>
+      `).join('');
+    }
+
+    function stopSynth() {
+      if (oscNode) {
+        try { oscNode.stop(); } catch (e) {}
+        oscNode = null;
+      }
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    }
+
+    function playTrack(id) {
+      const track = allTracks.find(t => t.id === id);
+      if (!track) return;
+      currentTrackId = id;
+      renderTracks();
+      stopSynth();
+
+      const isAudioOnly = track.mediaType === 'audio' || /\.(mp3|m4a|wav|ogg|aac|flac)$/i.test(track.id || '');
+      osdTrack.textContent = `${track.filename} [${track.genre}]`;
+
+      if (track.src) {
+        scope.style.display = 'none';
+        player.style.display = 'block';
+        osdStatus.textContent = 'BUFFERING...';
+        player.src = track.src;
+        player.play()
+          .then(() => {
+            osdStatus.textContent = isAudioOnly ? 'PLAY ► // TAPE AUDIO' : 'PLAY ► // VIDEO 1';
+          })
+          .catch(() => {
+            osdStatus.textContent = 'TAP SCREEN TO PLAY';
+          });
+      } else {
+        player.pause();
+        player.style.display = 'none';
+        scope.style.display = 'block';
+        osdStatus.textContent = 'PLAY ► // TEST SIGNAL';
+        startDemoScope(track.side === 'A' ? 110 : 220);
+      }
+    }
+
+    player.addEventListener('waiting', () => { osdStatus.textContent = 'BUFFERING...'; });
+    player.addEventListener('playing', () => {
+      const track = allTracks.find(t => t.id === currentTrackId);
+      const isAudioOnly = track && (track.mediaType === 'audio' || /\.(mp3|m4a|wav|ogg|aac|flac)$/i.test(track.id || ''));
+      osdStatus.textContent = isAudioOnly ? 'PLAY ► // TAPE AUDIO' : 'PLAY ► // VIDEO 1';
+    });
+    player.addEventListener('pause', () => { osdStatus.textContent = 'PAUSE ||'; });
+    player.addEventListener('timeupdate', () => {
+      const s = Math.floor(player.currentTime || 0);
+      const mins = String(Math.floor(s / 60)).padStart(2, '0');
+      const secs = String(s % 60).padStart(2, '0');
+      osdTime.textContent = `SP 00:${mins}:${secs}`;
+    });
+
+    function startDemoScope(freq) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.04;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      oscNode = osc;
+
+      const ctx = scope.getContext('2d');
+      let phase = 0;
+      function draw() {
+        scope.width = scope.clientWidth;
+        scope.height = scope.clientHeight;
+        ctx.fillStyle = '#050608';
+        ctx.fillRect(0, 0, scope.width, scope.height);
+        ctx.strokeStyle = '#4af626';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = 0; x < scope.width; x++) {
+          const y = scope.height / 2 + Math.sin((x * 0.03) + phase) * (scope.height * 0.22);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        phase += 0.15;
+        animId = requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function openUploadDrawer() {
+      document.getElementById('uploadDrawer').classList.add('open');
+      renderManageList();
+    }
+
+    function closeUploadDrawer() {
+      document.getElementById('uploadDrawer').classList.remove('open');
+    }
+
+    function renderManageList() {
+      const box = document.getElementById('manageClipsList');
+      box.innerHTML = allTracks.map(t => `
+        <div class="manage-item">
+          <span>[SIDE ${t.side}] ${escapeHtml(t.filename)}</span>
+          ${t.id.startsWith('demo-')
+            ? '<span style="color:#666">SAMPLE</span>'
+            : `<button class="btn-danger" onclick="deleteClip('${encodeURIComponent(t.id)}')">DEL</button>`}
+        </div>
+      `).join('');
+    }
+
+    async function handleUpload(e) {
+      e.preventDefault();
+      const status = document.getElementById('upStatus');
+      const btn = document.getElementById('upSubmitBtn');
+      const pin = document.getElementById('upPin').value.trim();
+      const file = document.getElementById('upFile').files[0];
+      if (!file) return;
+
+      if (file.size > 95 * 1024 * 1024) {
+        status.textContent = 'ERR: File exceeds Cloudflare 100MB limit. Trim clip under ~35s.';
+        return;
+      }
+
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('side', document.getElementById('upSide').value);
+      fd.append('title', document.getElementById('upTitle').value.trim());
+      fd.append('genre', document.getElementById('upGenre').value.trim());
+      fd.append('tuning', document.getElementById('upTuning').value.trim());
+
+      btn.disabled = true;
+      status.textContent = 'UPLOADING TO R2...';
+
+      try {
+        const res = await fetch('/api/tapes', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${pin}` },
+          body: fd
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        status.textContent = 'SAVED TO TAPE.';
+        document.getElementById('uploadForm').reset();
+        document.getElementById('upPin').value = pin;
+        await loadTracks();
+      } catch (err) {
+        status.textContent = `ERR: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function deleteClip(encodedKey) {
+      const pin = document.getElementById('upPin').value.trim();
+      const status = document.getElementById('upStatus');
+      if (!pin) {
+        status.textContent = 'Enter UPLOAD_PIN above first to delete clips.';
+        return;
+      }
+      status.textContent = 'DELETING...';
+      try {
+        const res = await fetch(`/api/tapes?key=${encodedKey}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${pin}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Delete failed');
+        status.textContent = 'CLIP DELETED.';
+        await loadTracks();
+      } catch (err) {
+        status.textContent = `ERR: ${err.message}`;
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    loadTracks();
+  </script>
+</body>
+</html>
